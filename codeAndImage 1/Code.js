@@ -77,6 +77,7 @@ class imageList
         ImagesArray.push(this)
         this.images=arrayWithImages;
         this.imageIndex=0;
+        this.MaxIndex>=this.images.length;
         
     }
     GetIndex()
@@ -86,7 +87,7 @@ class imageList
     ChangeIndex(x=1)
     {
         this.imageIndex+=x;
-        if (this.imageIndex>=this.images.length)
+        if (this.imageIndex>=this.MaxIndex)
         {
             this.imageIndex=0;
         }
@@ -160,7 +161,15 @@ class Sprite
     SetImageToChild()
     {
         this.image.src=this.imageArray.images[this.index];
-    
+    }
+    ChangeIndexPlus(x)
+    {
+        this.index+=x;
+        if(this.index>=this.imageArray.MaxIndex)
+        {
+            this.index=0;
+        }
+        
     }
 }
 //Background class
@@ -374,7 +383,7 @@ const walkingLoop= ()=>
     }
     if(key.left^key.right)
     {
-        frogRun.ChangeIndex();
+        player.ChangeIndex();
     }
     
 
