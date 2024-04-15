@@ -6,7 +6,17 @@ const screenDiv = document.getElementById("Screen");
 const outp= document.getElementById("out");
 const scratchScreenHeightPixels=360;
 const scratchScreenWidthPixels=480;
-//Controls
+//Funtions
+function CreateArayFromFoulder(foulder, FileType="png",size) {
+    let arr=[];
+    for(i=0;i<size;i++)
+    {
+        arr.push(`${foulder}\\${i}.${FileType}`);
+    }
+    console.log("Completed creating");
+    return arr;
+    
+}
 
 //Key 🔑
 class Key
@@ -68,48 +78,27 @@ class Screen
 
 }
 
-//Images 🖼️
-class imageList
-{
-    imageIndex
-    constructor(arrayWithImages)
-    {
-        ImagesArray.push(this)
-        this.images=arrayWithImages;
-        this.imageIndex=0;
-        this.MaxIndex>=this.images.length;
-        
-    }
-    GetIndex()
-    {
-        return this.imageIndex;
-    }
-    ChangeIndex(x=1)
-    {
-        this.imageIndex+=x;
-        if (this.imageIndex>=this.MaxIndex)
-        {
-            this.imageIndex=0;
-        }
-    }
-}
+
 
 //  Sprite 🤖
 class Sprite
 {
     constructor(Name, Image, WidthAndHeight, pos=[100,100], index = 0, size = 100) 
-        {
-        
+        {        
         this.name = Name;
         this.visibility = true;
-        this.imageArray = Image;
         this.ImageIndex = index;
         this.size = size;
         this.heightAndWidth=WidthAndHeight;
         this.x = pos[0];
         this.y = pos[1];
+        this.imageArray = [];
+        for(let element in Image) {
+           this.imageArray.push(element); 
+        };
         arrayWithSprites.push(this);
-        }
+        
+    }
     Hide(){
         this.visibility = false;
     }
@@ -146,8 +135,7 @@ class Sprite
         this.image = document.createElement("img");
         this.SetImageToChild();
         this.image.style.position="absolute";
-        
-        //this.image.classList.add("Spirte");
+
         screenDiv.appendChild(this.image);
         this.SetSize();
         this.SetPosition(); 
@@ -160,19 +148,20 @@ class Sprite
     }
     SetImageToChild()
     {
-        this.image.src=this.imageArray.images[this.index];
+        console.log(this.imageArray)
+        this.image.src=this.imageArray[this.index];
     }
     ChangeIndexPlus(x)
     {
         this.index+=x;
-        if(this.index>=this.imageArray.MaxIndex)
+        if(this.index>=this.imageArray.length())
         {
             this.index=0;
         }
         
     }
 }
-//Background class
+//Background class 
 class background
 {
     constructor()
@@ -188,9 +177,10 @@ class Level
     }
     TileCountY=13;
     TileCountX=16;
-    CreateTile(tiles)
-    {
-        this.tiles=tiles;
+    CreateTile(tile)
+    {  
+        console.log(tile) 
+        this.tiles=tile;
         this.height
         this.width
         let index=1;
@@ -202,14 +192,16 @@ class Level
             let tileY=0;
             for(let j=0;j<this.TileCountY;j++)
             {
+                index++;
                 x++;
-                this.ArrayWithTiles.push(new Tile(x, ImagesArray[i], [16,16], [tileX,tileY], this.tileLevel[i+j], 200));
+                this.ArrayWithTiles.push(new Tile(x, this.tiles, [16,16], [tileX,tileY], this.tileLevel[i+j], 200));
                 this.ArrayWithTiles[this.ArrayWithTiles.length-1].CreateChild();
                 this.ArrayWithTiles[this.ArrayWithTiles.length-1].index=index;
+                    console.log(index)
                 tileY+=32;   
             }
             tileX+=32;
-
+            
         }
         alert(x)
     }
@@ -245,7 +237,7 @@ class Player extends Sprite
 // Create objects 🗃️
 let key = new Key();
 const screen = new Screen();
-const frogRun = new imageList([
+const frogRun = [
     "Images\\NinjaFrog\\row-1-column-1.png", 
     "Images\\NinjaFrog\\row-1-column-2.png",
     "Images\\NinjaFrog\\row-1-column-3.png", 
@@ -257,73 +249,11 @@ const frogRun = new imageList([
     "Images\\NinjaFrog\\row-1-column-9.png",
     "Images\\NinjaFrog\\row-1-column-10.png",
     "Images\\NinjaFrog\\row-1-column-11.png",
-    "Images\\NinjaFrog\\row-1-column-12.png"])
-const tiles = new imageList(
-    [
-        "Images\\Tiles\\row-1-column-1.png",
-        "Images\\Tiles\\row-1-column-2.png",
-        "Images\\Tiles\\row-1-column-3.png",
-        "Images\\Tiles\\row-1-column-4.png",
-        "Images\\Tiles\\row-1-column-5.png",
-        "Images\\Tiles\\row-1-column-6.png",
-        "Images\\Tiles\\row-1-column-7.png",
-        "Images\\Tiles\\row-1-column-8.png",
-        "Images\\Tiles\\row-1-column-9.png",
-        "Images\\Tiles\\row-1-column-10.png",
-        "Images\\Tiles\\row-1-column-11.png",
-        "Images\\Tiles\\row-1-column-12.png",
-        "Images\\Tiles\\row-1-column-13.png",
-        "Images\\Tiles\\row-1-column-14.png",
-        "Images\\Tiles\\row-1-column-15.png",
-        "Images\\Tiles\\row-1-column-16.png",
-        "Images\\Tiles\\row-1-column-17.png",
-        "Images\\Tiles\\row-1-column-18.png",
-        "Images\\Tiles\\row-1-column-19.png",
-        "Images\\Tiles\\row-1-column-20.png",
-        "Images\\Tiles\\row-1-column-21.png",
-        "Images\\Tiles\\row-1-column-22.png",
-        "Images\\Tiles\\row-2-column-1.png",
-        "Images\\Tiles\\row-2-column-2.png",
-        "Images\\Tiles\\row-2-column-3.png",
-        "Images\\Tiles\\row-2-column-4.png",
-        "Images\\Tiles\\row-2-column-5.png",
-        "Images\\Tiles\\row-2-column-6.png",
-        "Images\\Tiles\\row-2-column-7.png",
-        "Images\\Tiles\\row-2-column-8.png",
-        "Images\\Tiles\\row-2-column-9.png",
-        "Images\\Tiles\\row-2-column-10.png",
-        "Images\\Tiles\\row-2-column-11.png",
-        "Images\\Tiles\\row-2-column-12.png",
-        "Images\\Tiles\\row-2-column-13.png",
-        "Images\\Tiles\\row-2-column-14.png",
-        "Images\\Tiles\\row-2-column-15.png",
-        "Images\\Tiles\\row-2-column-16.png",
-        "Images\\Tiles\\row-2-column-17.png",
-        "Images\\Tiles\\row-2-column-18.png",
-        "Images\\Tiles\\row-2-column-19.png",
-        "Images\\Tiles\\row-2-column-20.png",
-        "Images\\Tiles\\row-2-column-21.png",
-        "Images\\Tiles\\row-2-column-22.png",
-        "Images\\Tiles\\row-3-column-1.png",
-        "Images\\Tiles\\row-3-column-2.png",
-        "Images\\Tiles\\row-3-column-3.png",
-        "Images\\Tiles\\row-3-column-4.png",
-        "Images\\Tiles\\row-3-column-5.png",
-        "Images\\Tiles\\row-3-column-6.png",
-        "Images\\Tiles\\row-3-column-7.png",
-        "Images\\Tiles\\row-3-column-8.png",
-        "Images\\Tiles\\row-3-column-9.png",
-        "Images\\Tiles\\row-3-column-10.png",
-        "Images\\Tiles\\row-3-column-11.png",
-        "Images\\Tiles\\row-3-column-12.png",
-        "Images\\Tiles\\row-3-column-13.png",
-        "Images\\Tiles\\row-3-column-14.png",
-        "Images\\Tiles\\row-3-column-15.png",
+    "Images\\NinjaFrog\\row-1-column-12.png"]
 
-    ]
-)
-let level1 = new Level([1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1]);
-level1.CreateTile()
+const tiles = CreateArayFromFoulder("codeAndImage_1\\Images\\Tiles","png",145);
+let level1 = new Level([1,1,1,1,1,1,1,1,1,1,1,1,1,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,1,1,1,1,1,1,1,1,1,1,1,1]);
+level1.CreateTile(tiles)
 
 let player = new Player("Player", frogRun, [32,32], [100,100]);
 player.CreateChild();
@@ -383,7 +313,7 @@ const walkingLoop= ()=>
     }
     if(key.left^key.right)
     {
-        player.ChangeIndex();
+        player.ChangeIndexPlus();
     }
     
 
