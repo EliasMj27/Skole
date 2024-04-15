@@ -144,7 +144,7 @@ class Sprite
         
         this.image = document.createElement("img");
         this.SetImageToChild();
-        this.image.style.position="fixed";
+        this.image.style.position="absolute";
         
         //this.image.classList.add("Spirte");
         screenDiv.appendChild(this.image);
@@ -159,7 +159,7 @@ class Sprite
     }
     SetImageToChild()
     {
-        this.image.src=this.imageArray.images[this.imageArray.GetIndex()];
+        this.image.src=this.imageArray.images[this.index];
     
     }
 }
@@ -173,6 +173,10 @@ class background
 }
 class Level
 {
+    constructor(tileLevel)
+    {
+        this.tileLevel=tileLevel
+    }
     TileCountY=13;
     TileCountX=16;
     CreateTile(tiles)
@@ -190,7 +194,7 @@ class Level
             for(let j=0;j<this.TileCountY;j++)
             {
                 x++;
-                this.ArrayWithTiles.push(new Tile(x, ImagesArray[1], [16,16], [tileX,tileY], 2, 200));
+                this.ArrayWithTiles.push(new Tile(x, ImagesArray[i], [16,16], [tileX,tileY], this.tileLevel[i+j], 200));
                 this.ArrayWithTiles[this.ArrayWithTiles.length-1].CreateChild();
                 this.ArrayWithTiles[this.ArrayWithTiles.length-1].index=index;
                 tileY+=32;   
@@ -309,7 +313,7 @@ const tiles = new imageList(
 
     ]
 )
-let level1 = new Level();
+let level1 = new Level([1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1]);
 level1.CreateTile()
 
 let player = new Player("Player", frogRun, [32,32], [100,100]);
