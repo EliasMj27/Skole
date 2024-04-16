@@ -145,7 +145,7 @@ class Sprite
     {
         this.div= document.createElement("div");
         this.div.style.position="absolute";
-        this.div.innerHTML=`${this.index}`;
+        this.div.innerHTML=`${this.ImageIndex}`;
         this.SetPosition(this.div);
         this.SetSize(this.div);
         screenDiv.appendChild(this.div);
@@ -157,14 +157,12 @@ class Sprite
     }
     SetImageToChild()
     {
-        console.log(this.index)
-        console.log(this.imageArray[this.ImageIndex])
         this.image.src=this.imageArray[this.ImageIndex];
     }
     ChangeIndexPlus(x)
     {
         this.index+=x;
-        if(this.index>=this.imageArray.length())
+        if(this.index>=this.imageArray.length)
         {
             this.index=0;
         }
@@ -194,24 +192,23 @@ class Level
         this.tiles=tile;
         this.height
         this.width
-        let index=1;
-        let tileX=0;
+        let index=0;
+        let tileX=-16;
         this.ArrayWithTiles=[];
         let x=0;
         for(let i=0; i<this.TileCountX;i++)
         {
-            let tileY=0;
+            let tileY=-16;
             for(let j=0;j<this.TileCountY;j++)
             {
-                
-                index++;
                 string+=`${index}`;
                 x++;
-                this.ArrayWithTiles.push(new Tile(x, this.tiles, [16,16], [tileX,tileY], index, 200));
+                this.ArrayWithTiles.push(new Tile(x, this.tiles, [16,16], [tileX,tileY], this.tileLevel[index], 200));
                 this.ArrayWithTiles[this.ArrayWithTiles.length-1].CreateChild();
                 this.ArrayWithTiles[this.ArrayWithTiles.length-1].index=index;
-                this.ArrayWithTiles[this.ArrayWithTiles.length-1].innerHTML=`${index}`
-                    console.log(index)
+                this.ArrayWithTiles[this.ArrayWithTiles.length-1].innerHTML=`${index}`;
+                console.log(index)
+                index++;
                 tileY+=32;   
             }   
             tileX+=32;
@@ -229,6 +226,14 @@ class Level
         {
 
         }
+    }
+    GetTileAt(x,y)
+    {
+        var tileGridX=Math.floor((x+32)/32);
+        var tileGridY=Math.floor(y/32);
+        var tileIndex=1+tileGridY+(tileGridX*this.TileCountY)
+        console.log(this.tileLevel[tileIndex]);
+        return this.tileLevel[tileIndex];
     }
 }
 class Tile extends Sprite
@@ -249,6 +254,16 @@ class Tile extends Sprite
 //Player 🎮
 class Player extends Sprite
 {
+    MovePlayer(xMovment)
+    {
+        let SpeedX=xMovment;
+        this.x+=SpeedX;
+        if(level1.GetTileAt(this.x,this.y)!=42)
+        {
+            this.x-=SpeedX;
+        }
+        player.SetPosition()
+    }
 }
 
 
@@ -270,7 +285,7 @@ const frogRun = [
     "Images\\NinjaFrog\\row-1-column-12.png"]
 
 const tiles = CreateArayFromFoulder("Images\\Tiles","png",145);
-let level1 = new Level([1,1,1,1,1,1,1,1,1,1,1,1,1,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,1,1,1,1,1,1,1,1,1,1,1,1]);
+let level1 = new Level([1,1,1,1,1,1,1,1,1,1,1,1,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,1,1,1,1,1,1,1,1,1,1,1,1]);
 level1.CreateTile(tiles)
 
 let player = new Player("Player", frogRun, [32,32], [100,100]);
@@ -320,18 +335,15 @@ body.addEventListener("keydown",function(e)
 const walkingLoop= ()=>
 {
     if(key.right){    
-        
-        player.SetImageToChild(frogRun);
-        player.ChangeX(3)
+        player.MovePlayer(7*1)
     }
     if(key.left){    
-        
-        player.SetImageToChild(frogRun);
-        player.ChangeX(-3)
+        player.MovePlayer(7*-1)    
     }
     if(key.left^key.right)
     {
         player.ChangeIndexPlus();
+        player.SetImageToChild(frogRun);
     }
     
 
