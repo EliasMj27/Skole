@@ -90,11 +90,11 @@ class Sprite
         this.ImageIndex = index;
         this.size = size;
         this.heightAndWidth=WidthAndHeight;
-        this.x = pos[0];
+        this.x = pos[0];    
         this.y = pos[1];
         this.imageArray = [];
-        for(let element in Image) {
-           this.imageArray.push(element); 
+        for(let i=0; i<Image.length; i++){
+           this.imageArray.push(Image[i]); 
         };
         arrayWithSprites.push(this);
         
@@ -148,8 +148,9 @@ class Sprite
     }
     SetImageToChild()
     {
-        console.log(this.imageArray)
-        this.image.src=this.imageArray[this.index];
+        console.log(this.index)
+        console.log(this.imageArray[this.ImageIndex])
+        this.image.src=this.imageArray[this.ImageIndex];
     }
     ChangeIndexPlus(x)
     {
