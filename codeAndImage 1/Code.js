@@ -111,10 +111,10 @@ class Sprite
         this.x+=movment;
         this.SetPosition();
     }
-    SetPosition()
+    SetPosition(x=this.image)
     {
-        this.image.style.left=`${this.ConvertPixelToPrecentagesX(this.x)}%`;
-        this.image.style.top=`${this.ConvertPixelToPrecentagesY(this.y)}%`;
+        x.style.left=`${this.ConvertPixelToPrecentagesX(this.x)}%`;
+        x.style.top=`${this.ConvertPixelToPrecentagesY(this.y)}%`;
     }
     ConvertPixelToPrecentagesX(pixel)
     {
@@ -131,7 +131,6 @@ class Sprite
     }
     CreateChild()
     {
-        
         this.image = document.createElement("img");
         this.SetImageToChild();
         this.image.style.position="absolute";
@@ -139,12 +138,22 @@ class Sprite
         screenDiv.appendChild(this.image);
         this.SetSize();
         this.SetPosition(); 
+        this.createDiv();
 
     }
-    SetSize()
+    createDiv()
     {
-        this.image.style.width=`${this.ConvertPixelToPrecentagesX(this.heightAndWidth[1]*(this.size/100))}%`;
-        this.image.style.height=`${this.ConvertPixelToPrecentagesY(this.heightAndWidth[0]*(this.size/100))}%`;
+        this.div= document.createElement("div");
+        this.div.style.position="absolute";
+        this.div.innerHTML=`${this.index}`;
+        this.SetPosition(this.div);
+        this.SetSize(this.div);
+        screenDiv.appendChild(this.div);
+    }
+    SetSize(x=this.image)
+    {
+        x.style.width=`${this.ConvertPixelToPrecentagesX(this.heightAndWidth[1]*(this.size/100))}%`;
+        x.style.height=`${this.ConvertPixelToPrecentagesY(this.heightAndWidth[0]*(this.size/100))}%`;
     }
     SetImageToChild()
     {
@@ -180,6 +189,7 @@ class Level
     TileCountX=16;
     CreateTile(tile)
     {  
+        let string=""
         console.log(tile) 
         this.tiles=tile;
         this.height
@@ -193,17 +203,24 @@ class Level
             let tileY=0;
             for(let j=0;j<this.TileCountY;j++)
             {
+                
                 index++;
+                string+=`${index}`;
                 x++;
-                this.ArrayWithTiles.push(new Tile(x, this.tiles, [16,16], [tileX,tileY], this.tileLevel[i+j], 200));
+                this.ArrayWithTiles.push(new Tile(x, this.tiles, [16,16], [tileX,tileY], index, 200));
                 this.ArrayWithTiles[this.ArrayWithTiles.length-1].CreateChild();
                 this.ArrayWithTiles[this.ArrayWithTiles.length-1].index=index;
+                this.ArrayWithTiles[this.ArrayWithTiles.length-1].innerHTML=`${index}`
                     console.log(index)
                 tileY+=32;   
-            }
+            }   
             tileX+=32;
+            string+="\n"
+            
             
         }
+        
+        //outp.innerHTML=`${string}`;
         alert(x)
     }
     PositionTiles()
@@ -252,7 +269,7 @@ const frogRun = [
     "Images\\NinjaFrog\\row-1-column-11.png",
     "Images\\NinjaFrog\\row-1-column-12.png"]
 
-const tiles = CreateArayFromFoulder("codeAndImage_1\\Images\\Tiles","png",145);
+const tiles = CreateArayFromFoulder("Images\\Tiles","png",145);
 let level1 = new Level([1,1,1,1,1,1,1,1,1,1,1,1,1,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,42,42,42,42,42,42,42,42,42,42,42,42,42,1,1,1,1,1,1,1,1,1,1,1,1,1]);
 level1.CreateTile(tiles)
 
