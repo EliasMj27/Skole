@@ -351,6 +351,7 @@ body.addEventListener("keydown",function(e)
 });
 
 //loop ♻️
+let variableJump=0;
 const walkingLoop= ()=>
 {
     if(key.right){    
@@ -372,11 +373,15 @@ const fallLoop= () =>
     if(!key.up){
         player.MovePlayerY(10);
     }else{
-        if(player.tuchSolidBlock)
-        {
+        if(player.tuchSolidBlock || (variableJump<=4 && variableJump!=0))
+        { 
+            variableJump++  
             player.tuchSolidBlock=false;
             player.MovePlayerY(-10);
             
+        }
+        else{
+            variableJump=0;
         }
     }  
 }
