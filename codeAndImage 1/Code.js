@@ -198,7 +198,7 @@ class Level
         let x=0;
         for(let i=0; i<this.TileCountX;i++)
         {
-            let tileY=-16;
+            let tileY=-32;
             for(let j=0;j<this.TileCountY;j++)
             {
                 string+=`${index}`;
@@ -230,7 +230,7 @@ class Level
     GetTileAt(x,y)
     {
         var tileGridX=Math.floor((x+32)/32);
-        var tileGridY=Math.floor(y/32);
+        var tileGridY=Math.floor((y+22)/32);
         var tileIndex=1+tileGridY+(tileGridX*this.TileCountY)
         console.log(this.tileLevel[tileIndex]);
         return this.tileLevel[tileIndex];
@@ -254,7 +254,11 @@ class Tile extends Sprite
 //Player 🎮
 class Player extends Sprite
 {
-    MovePlayer(xMovment)
+    CreateVars()
+    {
+        this.tuchSolidBlock=false
+    }
+    MovePlayerX(xMovment)
     {
         let SpeedX=xMovment;
         this.x+=SpeedX;
@@ -264,6 +268,18 @@ class Player extends Sprite
         }
         player.SetPosition()
     }
+    MovePlayerY(yMovment)
+    {
+        let SpeedY=yMovment;
+        this.y+=SpeedY;
+        if(level1.GetTileAt(this.x,this.y)!=42)
+        {
+            this.tuchSolidBlock=true;
+            this.y-=SpeedY;
+        }
+        player.SetPosition()
+    }
+    
 }
 
 
@@ -297,15 +313,18 @@ let int=0;
 
 //eventlistner📆
 body.addEventListener("keydown", function(e) {
-  if (e.key === 'd') 
-  {
-    key.right=true;
-
-  }
-  if (e.key==='a')
-  {
-    key.left=true;
-  }
+    if (e.key === 'd') 
+    {
+        key.right=true;
+    }
+    if (e.key==='a')
+    {
+        key.left=true;
+    }
+    if (e.key==='k')
+    {
+        key.up=true;  
+    }
 });
 body.addEventListener("keyup",function(e)
 {
@@ -317,6 +336,10 @@ body.addEventListener("keyup",function(e)
     {
         key.left=false;
     }
+    if(e.key==='k')
+    {
+        key.up=false;
+    }
 })
 body.addEventListener("keydown",function(e)
 {
@@ -324,21 +347,17 @@ body.addEventListener("keydown",function(e)
 });
 body.addEventListener("keydown",function(e)
 {
-    if (e.key==='k')
-    {
-        player.SetImageToChild(frogRun);
-        player.ChangeY(-10)
-    }
+
 });
 
 //loop ♻️
 const walkingLoop= ()=>
 {
     if(key.right){    
-        player.MovePlayer(7*1)
+        player.MovePlayerX(7*1)
     }
     if(key.left){    
-        player.MovePlayer(7*-1)    
+        player.MovePlayerX(7*-1)    
     }
     if(key.left^key.right)
     {
@@ -348,4 +367,18 @@ const walkingLoop= ()=>
     
 
 }
-setInterval(walkingLoop,15)
+const fallLoop= () =>
+{
+    if(!key.up){
+        player.MovePlayerY(10);
+    }else{
+        if(player.tuchSolidBlock)
+        {
+            player.tuchSolidBlock=false;
+            player.MovePlayerY(-10);
+            
+        }
+    }  
+}
+setInterval(walkingLoop,15);
+setInterval(fallLoop,15);
