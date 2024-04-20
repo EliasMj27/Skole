@@ -4,6 +4,7 @@ let arrayWithSprites=[];
 const body = document.getElementById("body");
 const screenDiv = document.getElementById("Screen");
 const outp= document.getElementById("out");
+const slid1 =document.getElementById("slider")
 const scratchScreenHeightPixels=360;
 const scratchScreenWidthPixels=480;
 //Funtions
@@ -61,6 +62,7 @@ class Screen
         screenDiv.style.border="1px solid black";
         screenDiv.style.left="50%";
         screenDiv.style.transform="translate(-50%, 0)";
+        screenDiv.top=`${this.borderLenH/10}`
     }
     ReSizeScreen()
     {
@@ -216,8 +218,6 @@ class Level
             
             
         }
-        
-        //outp.innerHTML=`${string}`;
         alert(x)
     }
     PositionTiles()
@@ -312,6 +312,14 @@ let int=0;
 
 
 //eventlistner📆
+slid1.addEventListener(onchange, function()
+{
+    for(i in level1.ArrayWithTiles)
+    {
+        i.x+=slid1.ariaValueMax;
+        i.UpdatePosition();
+    }
+})
 body.addEventListener("keydown", function(e) {
     if (e.key === 'd') 
     {
@@ -351,6 +359,7 @@ body.addEventListener("keydown",function(e)
 });
 
 //loop ♻️
+let faling=true
 let variableJump=0;
 const walkingLoop= ()=>
 {
@@ -370,20 +379,30 @@ const walkingLoop= ()=>
 }
 const fallLoop= () =>
 {
-    if(!key.up){
+    if(key.up && player.tuchSolidBlock)
+    {
+        faling=false;
+    }
+    if(faling){
         player.MovePlayerY(10);
     }else{
-        if(player.tuchSolidBlock || (variableJump<=4 && variableJump!=0))
+        if(player.tuchSolidBlock || ( variableJump!=0))
         { 
-            variableJump++  
-            player.tuchSolidBlock=false;
-            player.MovePlayerY(-10);
-            
-        }
-        else{
-            variableJump=0;
+            setTimeout(()=>{
+                variableJump++
+                player.tuchSolidBlock=false;
+                player.MovePlayerY(-10);  
+            },100)
+            if(variableJump>6){
+                variableJump=0;
+                faling=true
+            }
         }
     }  
+    if(tuchSolidBlock)
+    {
+        faling=false
+    }
 }
 setInterval(walkingLoop,15);
 setInterval(fallLoop,15);
