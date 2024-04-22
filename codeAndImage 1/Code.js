@@ -147,7 +147,6 @@ class Sprite
     {
         this.div= document.createElement("div");
         this.div.style.position="absolute";
-        this.div.innerHTML=`${this.ImageIndex}`;
         this.SetPosition(this.div);
         this.SetSize(this.div);
         screenDiv.appendChild(this.div);
