@@ -190,18 +190,18 @@ class Level
     CreateTile(tile)
     {  
         let string=""
-        console.log(tile) 
+
         this.tiles=tile;
-        this.height
-        this.width
+        this.height=13;
+        this.width=16;
         let index=0;
         let tileX=-16;
         this.ArrayWithTiles=[];
         let x=0;
-        for(let i=0; i<this.TileCountX;i++)
+        for(let i=0; i<this.height;i++)
         {
             let tileY=-32;
-            for(let j=0;j<this.TileCountY;j++)
+            for(let j=0;j<this.width;j++)
             {
                 string+=`${index}`;
                 x++;
@@ -209,7 +209,6 @@ class Level
                 this.ArrayWithTiles[this.ArrayWithTiles.length-1].CreateChild();
                 this.ArrayWithTiles[this.ArrayWithTiles.length-1].index=index;
                 this.ArrayWithTiles[this.ArrayWithTiles.length-1].innerHTML=`${index}`;
-                console.log(index)
                 index++;
                 tileY+=32;   
             }   
@@ -232,7 +231,6 @@ class Level
         var tileGridX=Math.floor((x+32)/32);
         var tileGridY=Math.floor((y+22)/32);
         var tileIndex=1+tileGridY+(tileGridX*this.TileCountY)
-        console.log(this.tileLevel[tileIndex]);
         return this.tileLevel[tileIndex];
     }
 }
@@ -249,6 +247,11 @@ class Tile extends Sprite
     GetCords()
     {
         return [this.TileX, this.TileY];
+    }
+    LoopTileX(skip)
+    {
+        this.x+=(skip*32)
+        this.index+=level1.tileLevel[skip*level1.width]
     }
 }  
 //Player 🎮
@@ -301,7 +304,7 @@ const frogRun = [
     "Images\\NinjaFrog\\row-1-column-12.png"]
 
 const tiles = CreateArayFromFoulder("Images\\Tiles","png",145);
-let level1 = new Level([1,1,1,1,1,1,1,1,1,1,1,1,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,1,1,1,1,1,1,1,1,1,1,1,1]);
+let level1 = new Level([1,1,1,1,1,1,1,1,1,1,1,1,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,1,42,1,1,1,1,1,1,1,1,1,1,1,1,1,1]);
 level1.CreateTile(tiles)
 
 let player = new Player("Player", frogRun, [32,32], [100,100]);
@@ -312,14 +315,15 @@ let int=0;
 
 
 //eventlistner📆
-slid1.addEventListener(onchange, function()
-{
-    for(i in level1.ArrayWithTiles)
-    {
-        i.x+=slid1.ariaValueMax;
-        i.UpdatePosition();
-    }
-})
+slid1.addEventListener("input", function() {
+    console.log("shapeImageThreshold:");
+    level1.ArrayWithTiles.forEach(function(tile) {
+        tile.x += parseFloat(slid1.value)/2;  // Parse slid1.value to a float for correct arithmetic operations
+        if (typeof tile.SetPosition === 'function') {
+            tile.SetPosition();
+        }
+    });
+});
 body.addEventListener("keydown", function(e) {
     if (e.key === 'd') 
     {
@@ -359,6 +363,7 @@ body.addEventListener("keydown",function(e)
 });
 
 //loop ♻️
+let jumping=false;
 let faling=true
 let variableJump=0;
 const walkingLoop= ()=>
@@ -372,7 +377,7 @@ const walkingLoop= ()=>
     if(key.left^key.right)
     {
         player.ChangeIndexPlus();
-        player.SetImageToChild(frogRun);
+        player.SetImageToChild();
     }
     
 
@@ -384,25 +389,40 @@ const fallLoop= () =>
         faling=false;
     }
     if(faling){
-        player.MovePlayerY(10);
-    }else{
-        if(player.tuchSolidBlock || ( variableJump!=0))
-        { 
-            setTimeout(()=>{
-                variableJump++
-                player.tuchSolidBlock=false;
-                player.MovePlayerY(-10);  
-            },100)
-            if(variableJump>6){
-                variableJump=0;
-                faling=true
-            }
+        player.MovePlayerY(12);
+        variableJump=0;
+
+    }
+    if((key.up && !faling)||(jumping ))
+    { 
+        setTimeout(()=>{
+            variableJump++
+            player.tuchSolidBlock=false;
+            player.MovePlayerY(-10);  
+        },100)
+        if(variableJump>8){
+            faling=true
+            variableJump=0;
+            jumping=false;
+        }else{
+            faling=false;
+            jumping=true;
         }
-    }  
-    if(tuchSolidBlock)
+    }
+
+}
+const uppdate= () =>
+{
+
+    if(player.tuchSolidBlock)
     {
         faling=false
     }
+    if((level1.GetTileAt(player.x,player.y-32)==42) && !jumping){
+        faling=true
+
+    }
 }
+setInterval(uppdate)
 setInterval(walkingLoop,15);
-setInterval(fallLoop,15);
+    setInterval(fallLoop,15);
