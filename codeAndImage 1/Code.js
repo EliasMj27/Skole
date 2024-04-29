@@ -18,6 +18,20 @@ function CreateArayFromFoulder(foulder, FileType="png",size) {
     return arr;
     
 }
+const moveScreen=(y,x)=>
+{
+    for(i=0; i<=level1.ArrayWithTiles;i++)
+    {
+        if(x)
+        {
+            level1.ArrayWithTiles[i].x+=y;
+        }else
+        {
+            level1.ArrayWithTiles[i].x-=y;
+        }
+        level1.ArrayWithTiles[i].UpdatePosition();
+    }
+}
 
 //Key 🔑
 class Key
@@ -28,6 +42,10 @@ class Key
         this.down= false;
         this.left= false;
         this.right= false;
+        this.CUp= false;
+        this.CDown= false;
+        this.CLeft= false;
+        this.CRight= false;
     }
 }
 //Screen 🖥️
@@ -300,7 +318,7 @@ const frogRun = [
     "Images\\NinjaFrog\\row-1-column-12.png"]
 
 const tiles = CreateArayFromFoulder("Images\\Tiles","png",145);
-let level1 = new Level([1,1,1,1,1,1,1,1,1,1,1,1,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,1,1,1,1,1,1,1,1,1,1,1,1]);
+let level1 = new Level([1,1,1,1,1,1,1,1,1,1,1,1,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,1,1,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,1,1,1,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,33,36,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,33,36,42,1,1,42,42,42,42,42,42,19,42,42,42,42,1,1,42,42,42,42,42,42,22,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,42,42,42,42,42,42,42,42,42,42,42,1,1,1,1,1,1,1,1,1,1,1,1,1,1]);
 level1.CreateTile(tiles)
 
 let player = new Player("Player", frogRun, [32,32], [100,100]);
@@ -311,14 +329,6 @@ let int=0;
 
 
 //eventlistner📆
-slid1.addEventListener(onchange, function()
-{
-    for(i in level1.ArrayWithTiles)
-    {
-        i.x+=slid1.ariaValueMax;
-        i.UpdatePosition();
-    }
-})
 body.addEventListener("keydown", function(e) {
     if (e.key === 'd') 
     {
@@ -331,6 +341,18 @@ body.addEventListener("keydown", function(e) {
     if (e.key==='k')
     {
         key.up=true;  
+    } if(e.key==='37')
+    {
+        key.CLeft=true
+    }if(e.key==='39')
+    {
+        key.CRight=true;
+    }if(e.key==='38')
+    {
+        key.CUp=true;
+    }if(e.key==='40')
+    {
+        key.CDown=true;
     }
 });
 body.addEventListener("keyup",function(e)
@@ -346,16 +368,21 @@ body.addEventListener("keyup",function(e)
     if(e.key==='k')
     {
         key.up=false;
+    }if(e.key==='37')
+    {
+        key.CLeft=false;
+    }if(e.key==='39')
+    {
+        key.CRight=false;
+    }if(e.key==='38')
+    {
+        key.CUp=false;
+    }if(e.key==='40')
+    {
+        key.CDown=false;
     }
-})
-body.addEventListener("keydown",function(e)
-{
-
 });
-body.addEventListener("keydown",function(e)
-{
 
-});
 
 //loop ♻️
 let faling=true
@@ -403,5 +430,13 @@ const fallLoop= () =>
         faling=false
     }
 }
+const moveMap=()=>
+{
+    if(key.CLeft)
+    {
+        moveScreen(10,true);
+    }
+}
+setInterval(moveMap,15);
 setInterval(walkingLoop,15);
 setInterval(fallLoop,15);
